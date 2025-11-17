@@ -18,10 +18,12 @@ This project generates job board data by making client calls to Job Board API. O
 # Features
 - **Job Portal Service:** A Java application built using Maven and Java JDK 21.
 - **OAuth2.0:** A security mechanism for secured authentication and authorization utilizing client credentials.
-- **Keycloak Inegration:** The application utilizes Keycloak's features for implementing client credentials for secured requests between clients.
+- **Keycloak Integration:** The application utilizes Keycloak's features for implementing client credentials for secured requests between clients.
 
 # Prerequistes
 - [Java JDK 21](https://www.openlogic.com/openjdk-downloads)
+  - **For Mac**, you can install the JDK version with brew
+    - `brew install openjdk@21`
 - [Docker](https://www.docker.com/get-started/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/)
@@ -48,10 +50,12 @@ If you run into an issue where the `JAVA_HOME`is not set in WSL, you may need to
 # Getting Started
 
 ## Starting the Job Portal Service Container
-The `env_template` file contains default variables to store your datbase credentials and other sensitive data. Create a `.env` file in your project and copy the environment variables from the template and store them into the new config file. Ensure the file is referenced in `.gitignore`.
+The `env_template` file contains default variables to store your database credentials and other sensitive data. Create a `.env` file in your project and copy the environment variables from the template and store them into the new config file. Ensure the file is referenced in `.gitignore`.
   - For the `POSTGRES_DATABASE_URL` environment variable, you may run into issues connecting to the database. If so, ensure that the host name in the url string points to the postgresql container. Ex: `postgresql://[user]:[password]@[container name]/[database]`
 
 ### Running the Application
+  - Build the application locally
+    - `mvn clean install`
   - Start and build the application with the required docker command
     - `docker compose --env-file .env -f docker/docker-compose.yml up --build -d`
 
