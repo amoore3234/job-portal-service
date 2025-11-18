@@ -12,6 +12,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,92 +21,108 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class UserRepositoryIT {
 
-    @Autowired
-    UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
-    @Container
-    @ServiceConnection
-    public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+  @Container
+  @ServiceConnection
+  public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
 
-    @Test
-    void testCreateUser() {
+  @Test
+  void testCreateUser() {
 
-        // Arrange
-        User newUser = MockDataUtil.getUserData();
+    // Arrange
+    User newUser = MockDataUtil.getUserData();
 
-        // Act
-        User saveUser = userRepository.save(newUser);
+    // Act
+    User saveUser = userRepository.save(newUser);
 
-        // Assert
-        assertNotNull(saveUser.getId());
+    // Assert
+    assertNotNull(saveUser.getId());
 
-        userRepository.delete(saveUser);
-    }
+    userRepository.delete(saveUser);
+  }
 
-    @Test
-    void testFindUserById() {
+  @Test
+  void testFindUserById() {
 
-        // Arrange
-        User newUser = MockDataUtil.getUserData();
-        User createUser = userRepository.save(newUser);
+    // Arrange
+    User newUser = MockDataUtil.getUserData();
+    User createUser = userRepository.save(newUser);
 
-        // Act
-        User foundUser = userRepository.getReferenceById(createUser.getId());
+    // Act
+    User foundUser = userRepository.getReferenceById(createUser.getId());
 
-        // Assert
-        assertEquals(foundUser.getId(), newUser.getId());
+    // Assert
+    assertEquals(foundUser.getId(), newUser.getId());
 
-        userRepository.delete(foundUser);
-    }
+    userRepository.delete(foundUser);
+  }
 
-    @Test
-    void testFindAllUsers() {
+  @Test
+  void testFindAllUsers() {
 
-        // Arrange
-        User firstUser = MockDataUtil.getUserData();
-        User secondUser = MockDataUtil.getUserData();
+    // Arrange
+    User firstUser = MockDataUtil.getUserData();
+    User secondUser = MockDataUtil.getUserData();
 
-        List<User> users = List.of(firstUser, secondUser);
-        userRepository.saveAll(users);
+    List<User> users = List.of(firstUser, secondUser);
+    userRepository.saveAll(users);
 
-        // Act
-        List<User> fetchUsers = userRepository.findAll();
+    // Act
+    List<User> fetchUsers = userRepository.findAll();
 
-        // Assert
-        assertEquals(2, fetchUsers.size());
+    // Assert
+    assertEquals(2, fetchUsers.size());
 
-        userRepository.deleteAll();
-    }
+    userRepository.deleteAll();
+  }
 
-    @Test
-    void testDeleteUser() {
-        // Arrange
-        User newUser = MockDataUtil.getUserData();
-        User saveUser = userRepository.save(newUser);
+  @Test
+  void testDeleteUser() {
 
-        // Act
-        userRepository.delete(saveUser);
-        User findNullUser = userRepository.findById(1L).orElse(null);
+    // Arrange
+    User newUser = MockDataUtil.getUserData();
+    User saveUser = userRepository.save(newUser);
 
-        // Assert
-        assertNull(findNullUser);
-    }
+    // Act
+    userRepository.delete(saveUser);
+    User findNullUser = userRepository.findById(1L).orElse(null);
 
-    @Test
-    void testDeleteAllUsers() {
+    // Assert
+    assertNull(findNullUser);
+  }
 
-        // Arrange
-        User firstUser = MockDataUtil.getUserData();
-        User secondUser = MockDataUtil.getUserData();
+  @Test
+  void testDeleteAllUsers() {
 
-        List<User> users = List.of(firstUser, secondUser);
-        userRepository.saveAll(users);
+    // Arrange
+    User firstUser = MockDataUtil.getUserData();
+    User secondUser = MockDataUtil.getUserData();
 
-        // Act
-        userRepository.deleteAll();
-        int size = userRepository.findAll().size();
+    List<User> users = List.of(firstUser, secondUser);
+    userRepository.saveAll(users);
 
-        // Assert
-        assertEquals(0, size);
-    }
+    // Act
+    userRepository.deleteAll();
+    int size = userRepository.findAll().size();
+
+    // Assert
+    assertEquals(0, size);
+  }
+
+  @Test
+  void testFindByUsername() {
+
+    //Arrange
+    String expected = "testUsername";
+    User user = MockDataUtil.getUserData();
+    User createdUser = userRepository.save(user);
+
+    //Act
+    Optional<User> actual = userRepository.findByUsername(createdUser.getUsername());
+
+    //Assert
+    assertEquals(expected, actual.get().getUsername());
+  }
 }

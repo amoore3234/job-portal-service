@@ -25,7 +25,6 @@ hs_err_pid*
 replay_pid*
 
 HELP.md
-.mvn
 target/
 
 !**/src/main/**/target/

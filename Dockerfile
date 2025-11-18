@@ -27,11 +27,11 @@ FROM eclipse-temurin:21-jre-jammy
 RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
 USER appuser
 
-# Expose the default Spring Boot port
-EXPOSE 8081 5433
+# Expose the default Spring Boot and PostgreSQL ports
+EXPOSE 8080 5432
 
 # Copy the JAR file from the 'build' stage into the final image's root directory
-COPY target/job-portal-service-0.0.1-SNAPSHOT.jar ./JobPortalServiceApplication.jar
+COPY --from=build /app/target/*.jar ./app.jar
 
 # Define the command to run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "./JobPortalServiceApplication.jar"]
+ENTRYPOINT ["java", "-jar", "./app.jar"]

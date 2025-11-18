@@ -3,8 +3,13 @@ services:
   job-portal-service:
     build: ../
     container_name: job-portal-service
+    environment:
+      SPRING_DATASOURCE_URL: ${POSTGRES_DATABASE_URL}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SERVER_PORT: ${SERVER_PORT}
     ports:
-      - "8081:8081"
+      - "8080:8080"
     volumes:
       - .:/app
     depends_on:
@@ -20,7 +25,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5433"
+      - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - pg-data:/var/lib/postgresql
