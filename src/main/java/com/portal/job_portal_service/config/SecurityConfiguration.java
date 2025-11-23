@@ -49,6 +49,9 @@ public class SecurityConfiguration {
                 registry.requestMatchers("/portal/register","/portal/user/login", "/portal/user/register","/css/**", "/js/**").permitAll();
                 registry.anyRequest().authenticated();
             })
+            .oauth2Login(oauth2Login -> {
+              oauth2Login.loginPage("/portal/user/login").permitAll();
+            })
             .formLogin(httpForm -> {
                 httpForm
                     .loginPage("/portal/user/login")
