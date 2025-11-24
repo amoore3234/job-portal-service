@@ -46,7 +46,16 @@ public class SecurityConfiguration {
         return httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(registry -> {
-                registry.requestMatchers("/portal/register","/portal/user/login", "/portal/user/register","/css/**", "/js/**").permitAll();
+                registry.requestMatchers(
+                  "/portal/register",
+                  "/portal/user/login",
+                  "/portal/user/register",
+                  "/css/**",
+                  "/js/**",
+                  "/swagger-ui.html",
+                  "/swagger-ui/**",
+                  "/v3/api-docs/**",
+                  "/").permitAll();
                 registry.anyRequest().authenticated();
             })
             .oauth2Login(oauth2Login -> {

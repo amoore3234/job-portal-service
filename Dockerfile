@@ -28,7 +28,7 @@ RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
 USER appuser
 
 # Expose the default Spring Boot and PostgreSQL ports
-EXPOSE 8080 5432
+EXPOSE 8082 5433 8081
 
 # Copy the JAR file from the 'build' stage into the final image's root directory
 COPY --from=build /app/target/*.jar ./app.jar
