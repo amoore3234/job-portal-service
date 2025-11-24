@@ -11,6 +11,19 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8081/login/oauth2/code/keycloak
+        provider:
+          keycloak:
+            token-uri: http://localhost:8081/realms/job-portal-service-realm/protocol/openid-connect/token
+            authorization-uri: http://localhost:8081/realms/job-portal-service-realm/protocol/openid-connect/auth
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/job-portal-service-realm
+          jwk-set-uri: http://localhost:8081/realms/job-portal-service-realm/protocol/openid-connect/certs
   datasource:
     url: ${POSTGRES_DATABASE_URL}
     username: ${POSTGRES_USER}
@@ -22,3 +35,6 @@ spring:
       format_sql: true
       ddl-auto: update
     show-sql: true
+keycloak:
+  realm: job-portal-service-realm
+  resource: job-portal-service

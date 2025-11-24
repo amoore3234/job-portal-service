@@ -1,0 +1,54 @@
+openapi: 3.1.0
+
+tags:
+  - name: registration
+    description: User Registration
+info:
+  title: Job Portal API
+  version: 1.0.0
+  description: API for job-portal-service
+servers:
+  - description: Development
+    url: http://localhost:8080
+paths:
+  /portal/register:
+    post:
+      tags:
+        - registration
+      operationId: create-user
+      summary: Create user registration
+      description: Create user when they are prompted to sign up to access the job board.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: User created successfully
+          content:
+            text/plain:
+              examples:
+                userCreatedExample:
+                  summary: A successful user creation response
+                  value: "User registered successfully"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lasName:
+          type: string
+        username:
+          type: string
+        userEmail:
+          type: string
+        userPassword:
+          type: string
+        createdTimestamp:
+          type: string
+        updatedTimestamp:
+          type: string
