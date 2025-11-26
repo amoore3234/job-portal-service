@@ -11,17 +11,87 @@ services:
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      SERVER_PORT: ${SERVER_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID_API: ${KEYCLOAK_CLIENT_ID_API}
     ports:
       - "8082:8080"
     volumes:
       - .:/app
     depends_on:
-      - postgres
+      - job-portal-postgres
     networks:
       - job-portal-postgres-network
       - keycloak-network
-  postgres:
+  job-board-api:
+    container_name: job-board-api
+    build: ../../job-board-api/
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - ./playwright_data:/app/playwright_data
+    depends_on:
+      - job-board-api-postgres
+    environment:
+      PYTHONUNBUFFERED: 1
+    networks:
+      - job-board-api-postgres-network
+      - keycloak-network
+  job-board-api-postgres:
+    container_name: job-board-api-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql
+    restart: always
+    networks:
+      - job-board-api-postgres-network
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: ${KEYCLOAK_DB_URL}
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_LOG_LEVEL: info
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    command: ["start-dev"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - job-portal-postgres
+    networks:
+      - keycloak-network
+      - job-portal-postgres-network
+      - job-board-api-postgres-network
+  keycloak-postgres:
+    image: postgres:latest
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_DB: ${KEYCLOAK_DB}
+    ports:
+      - "5434:5432"
+    volumes:
+      - keycloak_data:/var/keycloak/data
+    restart: always
+    networks:
+      - keycloak-network
+  job-portal-postgres:
     image: postgres:latest
     container_name: job-portal-postgres
     environment:
@@ -36,8 +106,13 @@ services:
     restart: always
     networks:
       - job-portal-postgres-network
+      - keycloak-network
 networks:
   job-portal-postgres-network:
+  job-board-api-postgres-network:
   keycloak-network:
 volumes:
   pg-data:
+  pgdata:
+  playwright_data:
+  keycloak_data:

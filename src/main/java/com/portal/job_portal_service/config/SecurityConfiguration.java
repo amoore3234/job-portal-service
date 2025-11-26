@@ -46,6 +46,7 @@ public class SecurityConfiguration {
         return httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(registry -> {
+                registry.requestMatchers("service/portal/jobPostings", "service/portal/register", "service/portal/addJobPostings").permitAll();
                 registry.requestMatchers(
                   "/portal/register",
                   "/portal/user/login",

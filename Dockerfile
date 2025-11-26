@@ -10,9 +10,6 @@ COPY pom.xml .
 
 RUN chmod +x mvnw
 
-# Download dependencies separately to leverage Docker's layer caching
-RUN ./mvnw dependency:go-offline -B
-
 # Copy the source code
 COPY src src
 

@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
+@SuppressWarnings("null")
 public class UserRepositoryIT {
 
   @Autowired

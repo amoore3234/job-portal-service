@@ -55,8 +55,9 @@ If you run into an issue where the `JAVA_HOME`is not set in WSL, you may need to
 # Getting Started
 
 ## Starting the Job Portal Service Container
-The `env_template` file contains default variables to store your database credentials and other sensitive data. Create a `.env` file in your project and copy the environment variables from the template and store them into the new config file. Ensure the file is referenced in `.gitignore`.
-  - For the `POSTGRES_DATABASE_URL` environment variable, you may run into issues connecting to the database. If so, ensure that the host name in the url string points to the postgresql container. Ex: `jdbc:postgresql://[container name]:5432/[database]`
+The `env_template` file contains default variables to store your database credentials and other sensitive data. Create a `.env` file in your project and copy the environment variables from the template and store them into the new config file. For anyone using IntelliJ, you can store the env variables within the configuration settings. Ensure the file is referenced in `.gitignore`.
+  - For the `POSTGRES_DATABASE_URL` environment variable, you may run into issues connecting to the database. If so, ensure that the host name in the url string points to the postgresql container. Ex: `jdbc:postgresql://[container_name]:5432/[database_name]`
+  - The `KEYCLOAK_DB_URL` env should follow the same URL structure as the postgres URL string illustrated above. Ex: `jdbc:postgresql://[keycloak_container_name]:5432/[keycloak_database_name]`
 
 If you are using VSCode as your IDE and are have issues connecting to the PostgreSQL database, you can add the json payload in your `launch.json` file:
   ```
@@ -78,7 +79,9 @@ If the `launch.json` file doesn't exist, click the link to `create a launch.json
     - `mvn clean install`
   - Start and build the application with the required docker command
     - `docker compose --env-file .env -f docker/docker-compose.yml up --build -d`
-  - **Optional:** If you would like to run the application from your desired IDE instead of using the docker command above, you can run the `docker-compose-db.yml` instead to spin up a postgres database container. After starting the database, you can proceed running the spring boot application from your local environment.
+  - To shut down and stop active containers
+    - `docker compose --env-file .env -f docker/docker-compose.yml down`
+  - **Optional:** If you would like to run the application from your desired IDE instead of using the docker command above, you can run the `docker compose --env-file .env -f docker/docker-compose.yml up <postgres_container_name>` to spin up the standalone postgres container only. After starting the database, you can proceed running the spring boot application from your local environment.
   - Go to to the [Testing User Registration and Login Functionality](#testing-user-registration-and-login-functionality) section to interact with the UI to test the login feature.
 
 ### Running Queries Against the Postgres Container
@@ -114,3 +117,9 @@ If you are using VSCode and having issues running Testcontainers on your Windows
   }
 }
 ```
+# Resources
+- [Springdoc OpenAPI 3 and Spring Boot](https://springdoc.org/#google_vignette)
+- [Adding Authentication for GitHub Application](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
+  - [Creating a GitHub Application Sample](https://docs.github.com/en/apps/creating-github-apps)
+- [Adding Authentication for Google](https://developers.google.com/identity/protocols/oauth2)
+- [Integrating a web client in Spring Boot](https://docs.spring.io/spring-framework/reference/web/webflux-webclient.html)
