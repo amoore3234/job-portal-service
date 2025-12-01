@@ -92,6 +92,9 @@ If the `launch.json` file doesn't exist, click the link to `create a launch.json
 3. If you would like to access the database without executing the docker command in step 1, then you can run the command below.
   - `psql -h localhost -p 5432 <your_username> -d <your_database_container_name>`
 
+# Configuring Keycloak
+When running the Keycloak instance, additional configurations are required to setup Oauth credentials properly in Keycloak and send protected requests to the endpoints. You can follow the instructions in the [Keycloak wiki](https://github.com/amoore3234/Project-Wiki/blob/main/Guide/Keycloak.md#keycloak-setup) to configure the client credentials in Keycloak.
+
 # Testing
 
 ## Testing User Registration and Login Functionality
@@ -117,6 +120,10 @@ If you are using VSCode and having issues running Testcontainers on your Windows
   }
 }
 ```
+# Dev Links
+- [Job Portal Service Swagger UI](http://localhost:8082/swagger-ui/index.html#/)
+- [Job Portal Service Keycloak Admin](http://localhost:8080/)
+-
 # Resources
 - [Springdoc OpenAPI 3 and Spring Boot](https://springdoc.org/#google_vignette)
 - [Adding Authentication for GitHub Application](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)

@@ -18,16 +18,16 @@ spring:
             redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
         provider:
           keycloak:
-            token-uri: http://keycloak:8080/realms/job-portal-service-realm/protocol/openid-connect/token
-            authorization-uri: http://localhost:8080/realms/job-portal-service-realm/protocol/openid-connect/auth
+            token-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/token
+            authorization-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/job-portal-service-realm
-          jwk-set-uri: http://localhost:8080/realms/job-portal-service-realm/protocol/openid-connect/certs
+          issuer-uri: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   datasource:
-    url: ${POSTGRES_DATABASE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: ${JOB_PORTAL_POSTGRES_DATABASE_URL}
+    username: ${JOB_PORTAL_POSTGRES_USER}
+    password: ${JOB_PORTAL_POSTGRES_PASSWORD}
   jpa:
     hibernate:
       naming:
