@@ -123,10 +123,11 @@ If you are using VSCode and having issues running Testcontainers on your Windows
 # Dev Links
 - [Job Portal Service Swagger UI](http://localhost:8082/swagger-ui/index.html#/)
 - [Job Portal Service Keycloak Admin](http://localhost:8080/)
--
+  
 # Resources
 - [Springdoc OpenAPI 3 and Spring Boot](https://springdoc.org/#google_vignette)
 - [Adding Authentication for GitHub Application](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
   - [Creating a GitHub Application Sample](https://docs.github.com/en/apps/creating-github-apps)
 - [Adding Authentication for Google](https://developers.google.com/identity/protocols/oauth2)
+
 - [Integrating a web client in Spring Boot](https://docs.spring.io/spring-framework/reference/web/webflux-webclient.html)
