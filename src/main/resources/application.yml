@@ -29,6 +29,7 @@ spring:
     username: ${JOB_PORTAL_POSTGRES_USER}
     password: ${JOB_PORTAL_POSTGRES_PASSWORD}
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
