@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -58,7 +59,7 @@ public class JobPortalController {
         )
       )
     })
-  public ResponseEntity<?> createUser(User user) {
+  public ResponseEntity<?> createUser(@RequestBody User user) {
     user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
     user.setCreatedTimestamp(ZonedDateTime.now());
     userService.createUser(user);
