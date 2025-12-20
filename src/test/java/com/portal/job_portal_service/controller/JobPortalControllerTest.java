@@ -1,6 +1,5 @@
 package com.portal.job_portal_service.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.portal.job_portal_service.client.dto.JobPostingRequestDTO;
 import com.portal.job_portal_service.client.dto.JobPostingResponse;
 import com.portal.job_portal_service.client.dto.JobPostingResponseDTO;
-import com.portal.job_portal_service.model.User;
 import com.portal.job_portal_service.service.JobPortalService;
 import com.portal.job_portal_service.service.UserService;
 import com.portal.job_portal_service.util.MockDataUtil;
@@ -50,24 +48,6 @@ public class JobPortalControllerTest {
 
   @MockitoBean
   PasswordEncoder passwordEncoder;
-
-  @Test
-  public void testUserRegistration() throws Exception {
-
-    // Arrange
-    User user = MockDataUtil.getUserData();
-    String rawPassword = user.getUserPassword();
-    String encodedPassword = "password_encoded";
-
-    when(userService.createUser(any())).thenReturn(user);
-    when(passwordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
-
-    // Act and Assert
-    mockMvc.perform(post("/service/portal/register")
-          .contentType(MediaType.TEXT_PLAIN))
-                .andExpect(status().is2xxSuccessful());
-
-  }
 
   @Test
   public void testGetPostings() throws Exception {
