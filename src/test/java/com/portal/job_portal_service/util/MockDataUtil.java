@@ -2,6 +2,7 @@ package com.portal.job_portal_service.util;
 
 import com.portal.job_portal_service.client.dto.JobPostingRequestDTO;
 import com.portal.job_portal_service.client.dto.JobPostingResponseDTO;
+import com.portal.job_portal_service.model.LoginRequest;
 import com.portal.job_portal_service.model.User;
 
 import java.time.ZonedDateTime;
@@ -26,6 +27,19 @@ public final class MockDataUtil {
 		user.setUpdatedTimestamp(ZonedDateTime.now());
 
 		return user;
+	}
+
+	/**
+	 * Create test data for the LoginRequest entity.
+	 *
+	 * @return The login request object.
+	 */
+	public static LoginRequest getLoginRequest() {
+		LoginRequest loginRequest = new LoginRequest();
+		loginRequest.setUsername("testUsername");
+		loginRequest.setUserPassword("myPassword");
+
+		return loginRequest;
 	}
 
 	/**

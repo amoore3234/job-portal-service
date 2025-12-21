@@ -10,7 +10,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    // ⚠️ Store this securely (env variable in real apps)
+    // Store this securely (env variable in real apps)
     private static final String SECRET =
             "my-super-secret-key-my-super-secret-key";
 
@@ -18,7 +18,7 @@ public class JwtService {
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    // ✅ Generate token
+    // Generate token
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)

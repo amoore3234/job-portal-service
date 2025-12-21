@@ -19,6 +19,7 @@ import java.time.ZonedDateTime;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,17 +66,25 @@ public class AuthController {
   public ResponseEntity<LoginResponse> userLogin(
       @RequestBody LoginRequest request
   ) {
-      Authentication auth = authenticationManager.authenticate(
+      try {
+        Authentication auth = authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(
               request.getUsername(),
               request.getUserPassword()
           )
-      );
+        );
 
-      String token = jwtService.generateToken(auth.getName());
-      LoginResponse response = new LoginResponse();
-      response.setToken(token);
+        String token = jwtService.generateToken(auth.getName());
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
 
-      return ResponseEntity.ok(response);
-  }
+        return ResponseEntity.ok(response);
+      } catch (BadCredentialsException e) {
+        log.error("Authentication failed: " + e.getMessage());
+        return ResponseEntity.status(401).build();
+      } catch (Exception e) {
+        log.error("An unexpected error occurred: " + e.getMessage());
+          return ResponseEntity.status(500).build();
+      }
+    }
 }

@@ -2,6 +2,8 @@ package com.portal.job_portal_service.model;
 
 import java.time.ZonedDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,8 @@ public class User {
   private String username;
   private String userEmail;
   private String userPassword;
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
   private ZonedDateTime createdTimestamp;
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
   private ZonedDateTime updatedTimestamp;
 }
