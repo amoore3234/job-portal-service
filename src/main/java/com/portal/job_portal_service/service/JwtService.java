@@ -43,7 +43,7 @@ public class JwtService {
         }
     }
 
-    // 🔒 Internal helper
+    // Internal helper
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
