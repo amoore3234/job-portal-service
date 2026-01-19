@@ -82,7 +82,7 @@ If the `launch.json` file doesn't exist, click the link to `create a launch.json
   - To shut down and stop active containers
     - `docker compose --env-file .env -f docker/docker-compose.yml down`
   - **Optional:** If you would like to run the application from your desired IDE instead of using the docker command above, you can run the `docker compose --env-file .env -f docker/docker-compose.yml up <postgres_container_name>` to spin up the standalone postgres container only. After starting the database, you can proceed running the spring boot application from your local environment.
-  - Go to to the [Testing User Registration and Login Functionality](#testing-user-registration-and-login-functionality) section to interact with the UI to test the login feature.
+  - Go to the [Testing User Registration and Login Functionality](#testing-user-registration-and-login-functionality) section to interact with the UI to test the login feature.
 
 ### Running Queries Against the Postgres Container
 1. Once you spin up the application, if you need to run queries against the database, you can use the command below to access bash
@@ -129,5 +129,4 @@ If you are using VSCode and having issues running Testcontainers on your Windows
 - [Adding Authentication for GitHub Application](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
   - [Creating a GitHub Application Sample](https://docs.github.com/en/apps/creating-github-apps)
 - [Adding Authentication for Google](https://developers.google.com/identity/protocols/oauth2)
-
 - [Integrating a web client in Spring Boot](https://docs.spring.io/spring-framework/reference/web/webflux-webclient.html)

@@ -1,5 +1,6 @@
 package com.portal.job_portal_service.client;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.portal.job_portal_service.client.dto.JobPostingRequestDTO;
 import com.portal.job_portal_service.client.dto.JobPostingResponseDTO;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +27,8 @@ public class JobBoardAPIClient {
       postings = jobBoardAPIClient.get()
           .uri("/postings")
           .retrieve()
-          .bodyToMono(new ParameterizedTypeReference<List<JobPostingResponseDTO>>() {})
+          .bodyToMono(new ParameterizedTypeReference<List<JobPostingResponseDTO>>() {
+          })
           .block();
     } catch (WebClientResponseException e) {
       log.error("There was an issue fetching job postings with status code: {}", e.getStatusCode());
@@ -38,20 +39,21 @@ public class JobBoardAPIClient {
     return new ArrayList<>();
   }
 
-  public List<JobPostingRequestDTO> addPostings() {
-    List<JobPostingRequestDTO> addPostings = new ArrayList<>();
+  public void addPostings(String document) {
+    String cleanFilename = new File(document).getName();
     try {
-      addPostings = jobBoardAPIClient.post()
-          .uri("/job_postings")
+      jobBoardAPIClient.post()
+          .uri(uriBuilder -> uriBuilder
+              .path("/job_postings/{document}")
+              .build(cleanFilename))
           .retrieve()
-          .bodyToMono(new ParameterizedTypeReference<List<JobPostingRequestDTO>>() {})
+          .toBodilessEntity()
           .block();
+
+      log.info("Successfully initiated job postings request for document: {}", cleanFilename);
+
     } catch (WebClientResponseException e) {
-      log.error("There was an issue adding job postings with status code: {}", e.getStatusCode());
+      log.error("There was an issue adding job postings with status code: {}", e.getResponseBodyAsString());
     }
-    if (addPostings != null && !addPostings.isEmpty()) {
-      return addPostings;
-    }
-    return new ArrayList<>();
   }
 }

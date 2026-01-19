@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ResponseStatusException;
 
 import com.portal.job_portal_service.client.JobBoardAPIClient;
-import com.portal.job_portal_service.client.dto.JobPostingRequestDTO;
 import com.portal.job_portal_service.client.dto.JobPostingResponseDTO;
 
 import lombok.AllArgsConstructor;
@@ -34,9 +33,9 @@ public class JobPortalService {
     }
   }
 
-  public List<JobPostingRequestDTO> addJobPostings() {
+  public void addJobPostings(String document) {
     try {
-      return jobBoardAPIClient.addPostings();
+      jobBoardAPIClient.addPostings(document);
     } catch (WebClientResponseException e) {
       if (e.getStatusCode().is4xxClientError()) {
         log.error("Unable to fetch and add job posting data", e);

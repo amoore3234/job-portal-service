@@ -16,12 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -78,7 +78,7 @@ public class JobPortalController {
     }
   }
 
-  @PostMapping(value = "/addJobPostings")
+  @PostMapping(value = "/addJobPostings", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
   @Operation(summary = "Add a list of job postings from the job board site.")
     @ApiResponses(value = {
       @ApiResponse(
@@ -86,9 +86,13 @@ public class JobPortalController {
         description = "Job postings were saved successfully"
       )
     })
-  public ResponseEntity<Void> addJobPostings() {
+  public ResponseEntity<Void> addJobPostings(@RequestParam("document") MultipartFile document) throws IOException {
+
+    String fileName = document.getOriginalFilename();
+
     try {
-      jobPostingService.addJobPostings();
+      document.transferTo(new File("/app/uploads/" + fileName));
+      jobPostingService.addJobPostings(fileName);
       return ResponseEntity.noContent().build();
     } catch(WebClientResponseException e) {
       if (e.getStatusCode().is4xxClientError() || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {

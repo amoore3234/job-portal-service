@@ -1,6 +1,7 @@
 package com.portal.job_portal_service.client;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import com.portal.job_portal_service.util.MockDataUtil;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 @SuppressWarnings("null")
 public class JobBoardAPIClientTest {
@@ -69,16 +71,19 @@ public class JobBoardAPIClientTest {
     }
 
     @Test
-    public void testAddJobPostings() throws IOException {
-      List<JobPostingRequestDTO> mockJobPostings = MockDataUtil.addJobPostings();
+  public void testAddJobPostings() throws IOException, InterruptedException {
+    List<JobPostingRequestDTO> mockJobPostings = MockDataUtil.addJobPostings();
 
-      mockWebServer.enqueue(new MockResponse()
-        .setBody(new ObjectMapper().writeValueAsString(mockJobPostings))
-        .setResponseCode(200)
-        .addHeader("Content-Type", "application/json"));
+    mockWebServer.enqueue(new MockResponse()
+      .setBody(new ObjectMapper().writeValueAsString(mockJobPostings))
+      .setResponseCode(200)
+      .addHeader("Content-Type", "application/json"));
 
-      List<JobPostingRequestDTO> result = jobBoardAPIClient.addPostings();
+    jobBoardAPIClient.addPostings("resume.pdf");
 
-      assertTrue(result.size() == 1);
-    }
+    RecordedRequest recordedRequest = mockWebServer.takeRequest();
+
+    assertEquals("POST", recordedRequest.getMethod());
+    assertEquals("/job_postings/resume.pdf", recordedRequest.getPath());
+  }
 }

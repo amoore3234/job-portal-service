@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -19,7 +24,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ResponseStatusException;
 
 import com.portal.job_portal_service.client.JobBoardAPIClient;
-import com.portal.job_portal_service.client.dto.JobPostingRequestDTO;
 import com.portal.job_portal_service.client.dto.JobPostingResponseDTO;
 import com.portal.job_portal_service.util.MockDataUtil;
 
@@ -35,12 +39,9 @@ public class JobPortalServiceTest {
 
   private List<JobPostingResponseDTO> jobPostings;
 
-  private List<JobPostingRequestDTO> jobPostingRequest;
-
   @Before
   public void setUp() {
     jobPostings = MockDataUtil.getJobPostings();
-    jobPostingRequest = MockDataUtil.addJobPostings();
   }
 
   @Test
@@ -95,14 +96,11 @@ public class JobPortalServiceTest {
   public void testAddJobPostings() {
 
     // Arrange
-    when(jobBoardAPIClient.addPostings()).thenReturn(jobPostingRequest);
-
-    // Act
-    List<JobPostingRequestDTO> actual = jobPostingService.addJobPostings();
+    doNothing().when(jobBoardAPIClient).addPostings(anyString());
 
     // Assert
-    assertNotNull(actual);
-    assertFalse(actual.isEmpty());
+    verify(jobBoardAPIClient, times(1)).addPostings("test-resume.pdf");
+
   }
 
   @Test
@@ -111,11 +109,11 @@ public class JobPortalServiceTest {
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
       HttpStatus.NOT_FOUND.value(), "404 Not Found", null, null, null);
-    when(jobBoardAPIClient.addPostings()).thenThrow(exception);
+    doThrow(exception).when(jobBoardAPIClient).addPostings(anyString());
 
     // Act
     ResponseStatusException thrownException = assertThrows(ResponseStatusException.class, () -> {
-        jobPostingService.addJobPostings();
+        jobPostingService.addJobPostings(anyString());
     });
 
     // Assert
@@ -128,11 +126,11 @@ public class JobPortalServiceTest {
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
       HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
-    when(jobBoardAPIClient.addPostings()).thenThrow(exception);
+    doThrow(exception).when(jobBoardAPIClient).addPostings(anyString());
 
     // Act
     ResponseStatusException thrownException = assertThrows(ResponseStatusException.class, () -> {
-        jobPostingService.addJobPostings();
+        jobPostingService.addJobPostings(anyString());
     });
 
     // Assert

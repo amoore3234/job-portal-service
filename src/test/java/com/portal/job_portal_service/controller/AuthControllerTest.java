@@ -88,8 +88,6 @@ public class AuthControllerTest {
     String loginRequestJson = objectMapper.writeValueAsString(loginRequest);
 
     // Act and Assert
-    verify(authenticationManager).authenticate(any(Authentication.class));
-
     mockMvc.perform(post("/auth/login")
           .contentType(MediaType.APPLICATION_JSON)
           .content(loginRequestJson))

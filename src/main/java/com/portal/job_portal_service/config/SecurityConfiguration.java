@@ -78,22 +78,19 @@ public class SecurityConfiguration {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(registry -> {
-                registry.requestMatchers(
-                  "service/portal/jobPostings",
-                  "auth/register",
-                  "auth/login",
-                  "service/portal/addJobPostings").permitAll();
-                registry.requestMatchers(
-                  "/portal/register",
-                  "/portal/user/login",
-                  "/portal/user/register",
-                  "/css/**",
-                  "/js/**",
-                  "/swagger-ui.html",
-                  "/swagger-ui/**",
-                  "/v3/api-docs/**",
-                  "/").permitAll();
-                registry.anyRequest().authenticated();
+              registry.requestMatchers(
+                "/service/portal/jobPostings",
+                "/auth/register",
+                "/auth/login",
+                "/service/portal/addJobPostings").permitAll();
+              registry.requestMatchers(
+                "/css/**",
+                "/js/**",
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/").permitAll();
+              registry.anyRequest().authenticated();
             })
             .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class)
             .oauth2Login(oauth2Login -> {
