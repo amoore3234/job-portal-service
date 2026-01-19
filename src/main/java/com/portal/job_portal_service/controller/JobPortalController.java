@@ -16,12 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -99,5 +100,27 @@ public class JobPortalController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
       }
     }
+  }
+
+    @PostMapping(value = "/uploadDocument")
+    @Operation(summary = "Document Upload")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Document was uploaded successfully"
+            )
+    })
+  public ResponseEntity<?> handleFileUpload(@RequestParam("document")MultipartFile document) {
+
+      String fileName = document.getOriginalFilename();
+
+      try {
+          document.transferTo(new File("/" + fileName));
+          log.info("Document was uploaded successfully");
+          return ResponseEntity.noContent().build();
+      } catch (IOException e) {
+          log.error("There was an issue uploading the document");
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      }
   }
 }
