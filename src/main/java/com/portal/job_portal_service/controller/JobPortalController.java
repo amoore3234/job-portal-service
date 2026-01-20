@@ -23,6 +23,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -78,7 +81,7 @@ public class JobPortalController {
       }
     }
   }
-
+  // TODO: Add multiplipart functionality in this route
   @PostMapping(value = "/addJobPostings")
   @Operation(summary = "Add a list of job postings from the job board site.")
     @ApiResponses(value = {
@@ -102,7 +105,7 @@ public class JobPortalController {
     }
   }
 
-    @PostMapping(value = "/uploadDocument")
+    @PostMapping(value = "/uploadDocument", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @Operation(summary = "Document Upload")
     @ApiResponses(value = {
             @ApiResponse(
@@ -110,12 +113,16 @@ public class JobPortalController {
                     description = "Document was uploaded successfully"
             )
     })
-  public ResponseEntity<?> handleFileUpload(@RequestParam("document")MultipartFile document) {
+  public ResponseEntity<Void> handleFileUpload(@RequestParam("document") MultipartFile document) throws IOException {
 
       String fileName = document.getOriginalFilename();
+      String userHome = System.getProperty("user.home");
+
+      Path targetPath = Paths.get(userHome, "uploads", fileName).toAbsolutePath();
+      Files.createDirectories(targetPath.getParent());
 
       try {
-          document.transferTo(new File("/" + fileName));
+          document.transferTo(targetPath.toFile());
           log.info("Document was uploaded successfully");
           return ResponseEntity.noContent().build();
       } catch (IOException e) {

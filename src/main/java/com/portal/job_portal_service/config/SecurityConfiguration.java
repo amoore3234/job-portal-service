@@ -82,7 +82,8 @@ public class SecurityConfiguration {
                   "service/portal/jobPostings",
                   "auth/register",
                   "auth/login",
-                  "service/portal/addJobPostings").permitAll();
+                  "service/portal/addJobPostings",
+                        "service/portal/uploadDocument").permitAll();
                 registry.requestMatchers(
                   "/portal/register",
                   "/portal/user/login",
