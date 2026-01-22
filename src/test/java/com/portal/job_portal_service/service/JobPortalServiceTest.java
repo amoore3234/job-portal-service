@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -95,10 +96,10 @@ public class JobPortalServiceTest {
   public void testAddJobPostings() {
 
     // Arrange
-    when(jobBoardAPIClient.addPostings()).thenReturn(jobPostingRequest);
+    when(jobBoardAPIClient.addPostings(anyString())).thenReturn(jobPostingRequest);
 
     // Act
-    List<JobPostingRequestDTO> actual = jobPostingService.addJobPostings();
+    List<JobPostingRequestDTO> actual = jobPostingService.addJobPostings(anyString());
 
     // Assert
     assertNotNull(actual);
@@ -111,11 +112,11 @@ public class JobPortalServiceTest {
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
       HttpStatus.NOT_FOUND.value(), "404 Not Found", null, null, null);
-    when(jobBoardAPIClient.addPostings()).thenThrow(exception);
+    when(jobBoardAPIClient.addPostings(anyString())).thenThrow(exception);
 
     // Act
     ResponseStatusException thrownException = assertThrows(ResponseStatusException.class, () -> {
-        jobPostingService.addJobPostings();
+        jobPostingService.addJobPostings(anyString());
     });
 
     // Assert
@@ -128,11 +129,11 @@ public class JobPortalServiceTest {
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
       HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
-    when(jobBoardAPIClient.addPostings()).thenThrow(exception);
+    when(jobBoardAPIClient.addPostings(anyString())).thenThrow(exception);
 
     // Act
     ResponseStatusException thrownException = assertThrows(ResponseStatusException.class, () -> {
-        jobPostingService.addJobPostings();
+        jobPostingService.addJobPostings(anyString());
     });
 
     // Assert

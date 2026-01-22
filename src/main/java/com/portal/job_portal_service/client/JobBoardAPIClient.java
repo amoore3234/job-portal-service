@@ -38,11 +38,14 @@ public class JobBoardAPIClient {
     return new ArrayList<>();
   }
 
-  public List<JobPostingRequestDTO> addPostings() {
+  public List<JobPostingRequestDTO> addPostings(String document) {
     List<JobPostingRequestDTO> addPostings = new ArrayList<>();
     try {
       addPostings = jobBoardAPIClient.post()
-          .uri("/job_postings")
+          .uri(uriBuilder -> uriBuilder
+                  .path("/job_postings")
+                  .queryParam("document", document)
+                  .build())
           .retrieve()
           .bodyToMono(new ParameterizedTypeReference<List<JobPostingRequestDTO>>() {})
           .block();

@@ -107,31 +107,42 @@ public class JobPortalControllerTest {
 
     @Test
     public void testAddJobPostings() throws Exception {
-
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "document",
+                "SoftwareEngineer.pdf",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                "Software Engineer Resume".getBytes()
+        );
         // Arrange
         List<JobPostingRequestDTO> addPostings = MockDataUtil.addJobPostings();
 
-        when(jobPostingService.addJobPostings()).thenReturn(addPostings);
+        when(jobPostingService.addJobPostings(anyString())).thenReturn(addPostings);
         when(jwtService.generateToken(anyString())).thenReturn("token");
 
         // Act and Assert
-        mockMvc.perform(post("/service/portal/addJobPostings")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mockMvc.perform(multipart("/service/portal/addJobPostings").file(mockFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+              .andExpect(status().isOk());
 
     }
 
     @Test
     public void testAddPostings_400Error_unauthorized() throws Exception {
-
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "document",
+                "SoftwareEngineer.pdf",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                "Software Engineer Resume".getBytes()
+        );
         // Arrange
         WebClientResponseException exception = WebClientResponseException.create(
                 HttpStatus.UNAUTHORIZED.value(), "401 UNAUTHORIZED", null, null, null);
-        when(jobPostingService.addJobPostings()).thenThrow(exception);
-        when(jobPortalController.addJobPostings()).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "401 Unauthorized"));
+        when(jobPostingService.addJobPostings(anyString())).thenThrow(exception);
+        when(jobPortalController.addJobPostings(any())).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "401 Unauthorized"));
 
         // Act and Assert
-        mockMvc.perform(post("/service/portal/addJobPostings"))
+      mockMvc.perform(multipart("/service/portal/addJobPostings").file(mockFile)
+                      .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string(""));
 
@@ -139,15 +150,21 @@ public class JobPortalControllerTest {
 
     @Test
     public void testAddPostings_500Error_serverError() throws Exception {
-
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "document",
+                "SoftwareEngineer.pdf",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                "Software Engineer Resume".getBytes()
+        );
         // Arrange
         WebClientResponseException exception = WebClientResponseException.create(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
-        when(jobPostingService.addJobPostings()).thenThrow(exception);
-        when(jobPortalController.addJobPostings()).thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "500 Internal Server Error"));
+        when(jobPostingService.addJobPostings(anyString())).thenThrow(exception);
+        when(jobPortalController.addJobPostings(any())).thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "500 Internal Server Error"));
 
         // Act and Assert
-        mockMvc.perform(post("/service/portal/addJobPostings"))
+        mockMvc.perform(multipart("/service/portal/addJobPostings").file(mockFile)
+                      .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string(""));
 

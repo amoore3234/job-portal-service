@@ -1,6 +1,7 @@
 package com.portal.job_portal_service.client;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class JobBoardAPIClientTest {
         .setResponseCode(200)
         .addHeader("Content-Type", "application/json"));
 
-      List<JobPostingRequestDTO> result = jobBoardAPIClient.addPostings();
+      List<JobPostingRequestDTO> result = jobBoardAPIClient.addPostings(anyString());
 
       assertTrue(result.size() == 1);
     }

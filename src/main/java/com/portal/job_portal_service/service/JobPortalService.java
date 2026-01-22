@@ -34,9 +34,9 @@ public class JobPortalService {
     }
   }
 
-  public List<JobPostingRequestDTO> addJobPostings() {
+  public List<JobPostingRequestDTO> addJobPostings(String document) {
     try {
-      return jobBoardAPIClient.addPostings();
+      return jobBoardAPIClient.addPostings(document);
     } catch (WebClientResponseException e) {
       if (e.getStatusCode().is4xxClientError()) {
         log.error("Unable to fetch and add job posting data", e);

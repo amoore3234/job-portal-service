@@ -19,9 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,8 +79,8 @@ public class JobPortalController {
       }
     }
   }
-  // TODO: Add multiplipart functionality in this route
-  @PostMapping(value = "/addJobPostings")
+
+  @PostMapping(value = "/addJobPostings", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
   @Operation(summary = "Add a list of job postings from the job board site.")
     @ApiResponses(value = {
       @ApiResponse(
@@ -90,9 +88,12 @@ public class JobPortalController {
         description = "Job postings were saved successfully"
       )
     })
-  public ResponseEntity<Void> addJobPostings() {
+  public ResponseEntity<Void> addJobPostings(@RequestParam("document") MultipartFile document) {
+
+    String fileName = document.getOriginalFilename();
+
     try {
-      jobPostingService.addJobPostings();
+      jobPostingService.addJobPostings(fileName);
       return ResponseEntity.noContent().build();
     } catch(WebClientResponseException e) {
       if (e.getStatusCode().is4xxClientError() || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -103,31 +104,5 @@ public class JobPortalController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
       }
     }
-  }
-
-    @PostMapping(value = "/uploadDocument", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    @Operation(summary = "Document Upload")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Document was uploaded successfully"
-            )
-    })
-  public ResponseEntity<Void> handleFileUpload(@RequestParam("document") MultipartFile document) throws IOException {
-
-      String fileName = document.getOriginalFilename();
-      String userHome = System.getProperty("user.home");
-
-      Path targetPath = Paths.get(userHome, "uploads", fileName).toAbsolutePath();
-      Files.createDirectories(targetPath.getParent());
-
-      try {
-          document.transferTo(targetPath.toFile());
-          log.info("Document was uploaded successfully");
-          return ResponseEntity.noContent().build();
-      } catch (IOException e) {
-          log.error("There was an issue uploading the document");
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-      }
   }
 }
