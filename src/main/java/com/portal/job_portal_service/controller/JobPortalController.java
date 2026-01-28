@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -88,11 +86,12 @@ public class JobPortalController {
         description = "Job postings were saved successfully"
       )
     })
-  public ResponseEntity<Void> addJobPostings(@RequestParam("document") MultipartFile document) {
+  public ResponseEntity<Void> addJobPostings(@RequestParam("document") MultipartFile document) throws IOException {
 
     String fileName = document.getOriginalFilename();
 
     try {
+      document.transferTo(new File("/app/data" + fileName));
       jobPostingService.addJobPostings(fileName);
       return ResponseEntity.noContent().build();
     } catch(WebClientResponseException e) {

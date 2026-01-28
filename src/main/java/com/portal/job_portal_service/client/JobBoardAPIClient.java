@@ -42,13 +42,12 @@ public class JobBoardAPIClient {
     List<JobPostingRequestDTO> addPostings = new ArrayList<>();
     try {
       addPostings = jobBoardAPIClient.post()
-          .uri(uriBuilder -> uriBuilder
-                  .path("/job_postings")
-                  .queryParam("document", document)
-                  .build())
-          .retrieve()
-          .bodyToMono(new ParameterizedTypeReference<List<JobPostingRequestDTO>>() {})
-          .block();
+              .uri(uriBuilder -> uriBuilder
+                      .path("/job_postings/{document}")
+                      .build(document))
+              .retrieve()
+              .bodyToMono(new ParameterizedTypeReference<List<JobPostingRequestDTO>>() {})
+              .block();
     } catch (WebClientResponseException e) {
       log.error("There was an issue adding job postings with status code: {}", e.getStatusCode());
     }
