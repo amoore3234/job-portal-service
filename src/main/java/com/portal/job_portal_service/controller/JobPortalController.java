@@ -86,13 +86,13 @@ public class JobPortalController {
         description = "Job postings were saved successfully"
       )
     })
-  public ResponseEntity<Void> addJobPostings(@RequestParam("document") MultipartFile document) throws IOException {
-
-    String fileName = document.getOriginalFilename();
+  public ResponseEntity<Void> addJobPostings(@RequestParam("document") MultipartFile document, @RequestParam("username") String username) throws IOException {
 
     try {
-      document.transferTo(new File("/app/uploads/" + fileName));
-      jobPostingService.addJobPostings(fileName);
+      String standardizedName = username + "_" + document.getOriginalFilename();
+      File destFile = new File("/app/uploads/", standardizedName);
+      document.transferTo(destFile);
+      jobPostingService.addJobPostings(standardizedName);
       return ResponseEntity.noContent().build();
     } catch(WebClientResponseException e) {
       if (e.getStatusCode().is4xxClientError() || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {

@@ -71,8 +71,8 @@ public class JobPortalControllerTest {
 
     // Act and Assert
     mockMvc.perform(get("/service/portal/jobPostings")
-      .accept(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk());
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
   }
 
@@ -81,15 +81,15 @@ public class JobPortalControllerTest {
 
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
-      HttpStatus.UNAUTHORIZED.value(), "401 UNAUTHORIZED", null, null, null);
+        HttpStatus.UNAUTHORIZED.value(), "401 UNAUTHORIZED", null, null, null);
     when(jobPostingService.getJobPostings()).thenThrow(exception);
     when(jobPortalController.getPostings())
-      .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "401 Unauthorized"));
+        .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "401 Unauthorized"));
 
     // Act and Assert
     mockMvc.perform(get("/service/portal/jobPostings"))
-      .andExpect(status().isUnauthorized())
-      .andExpect(content().string(""));
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().string(""));
 
   }
 
@@ -98,33 +98,33 @@ public class JobPortalControllerTest {
 
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
-      HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
+        HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
     when(jobPostingService.getJobPostings()).thenThrow(exception);
     when(jobPortalController.getPostings())
-      .thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "500 Internal Server Error"));
+        .thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "500 Internal Server Error"));
 
     // Act and Assert
     mockMvc.perform(get("/service/portal/jobPostings"))
-      .andExpect(status().isInternalServerError())
-      .andExpect(content().string(""));
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().string(""));
 
   }
 
   @Test
   public void testAddJobPostings() throws Exception {
     MockMultipartFile mockFile = new MockMultipartFile(
-      "document",
-      "SoftwareEngineer.pdf",
-      MediaType.MULTIPART_FORM_DATA_VALUE,
-      "Software Engineer Resume".getBytes());
+        "document",
+        "SoftwareEngineer.pdf",
+        MediaType.MULTIPART_FORM_DATA_VALUE,
+        "Software Engineer Resume".getBytes());
 
     doNothing().when(jobPostingService).addJobPostings(anyString());
     when(jwtService.generateToken(anyString())).thenReturn("token");
 
     // Act and Assert
     mockMvc.perform(multipart("/service/portal/addJobPostings").file(mockFile)
-      .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-      .andExpect(status().isOk());
+        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        .andExpect(status().isOk());
 
     verify(jobPostingService, times(1)).addJobPostings(anyString());
   }
@@ -132,44 +132,44 @@ public class JobPortalControllerTest {
   @Test
   public void testAddPostings_400Error_unauthorized() throws Exception {
     MockMultipartFile mockFile = new MockMultipartFile(
-      "document",
-      "SoftwareEngineer.pdf",
-      MediaType.MULTIPART_FORM_DATA_VALUE,
-      "Software Engineer Resume".getBytes());
+        "document",
+        "SoftwareEngineer.pdf",
+        MediaType.MULTIPART_FORM_DATA_VALUE,
+        "Software Engineer Resume".getBytes());
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
-      HttpStatus.UNAUTHORIZED.value(), "401 UNAUTHORIZED", null, null, null);
+        HttpStatus.UNAUTHORIZED.value(), "401 UNAUTHORIZED", null, null, null);
     doThrow(exception).when(jobPostingService).addJobPostings(anyString());
-    when(jobPortalController.addJobPostings(any()))
-      .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "401 Unauthorized"));
+    when(jobPortalController.addJobPostings(any(), any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "401 Unauthorized"));
 
     // Act and Assert
     mockMvc.perform(multipart("/service/portal/addJobPostings").file(mockFile)
-      .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-      .andExpect(status().isUnauthorized())
-      .andExpect(content().string(""));
+        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().string(""));
 
   }
 
   @Test
   public void testAddPostings_500Error_serverError() throws Exception {
     MockMultipartFile mockFile = new MockMultipartFile(
-      "document",
-      "SoftwareEngineer.pdf",
-      MediaType.MULTIPART_FORM_DATA_VALUE,
-      "Software Engineer Resume".getBytes());
+        "document",
+        "SoftwareEngineer.pdf",
+        MediaType.MULTIPART_FORM_DATA_VALUE,
+        "Software Engineer Resume".getBytes());
     // Arrange
     WebClientResponseException exception = WebClientResponseException.create(
-      HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
+        HttpStatus.INTERNAL_SERVER_ERROR.value(), "500 Internal Server Error", null, null, null);
     doThrow(exception).when(jobPostingService).addJobPostings(anyString());
-    when(jobPortalController.addJobPostings(any()))
-      .thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "500 Internal Server Error"));
+    when(jobPortalController.addJobPostings(any(), any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "500 Internal Server Error"));
 
     // Act and Assert
     mockMvc.perform(multipart("/service/portal/addJobPostings").file(mockFile)
-      .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-      .andExpect(status().isInternalServerError())
-      .andExpect(content().string(""));
+        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().string(""));
 
   }
 }

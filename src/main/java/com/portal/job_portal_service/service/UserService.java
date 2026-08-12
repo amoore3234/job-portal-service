@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,32 @@ public class UserService implements UserDetailsService {
 
   public void deleteAllUsers() {
     userRepository.deleteAll();
+  }
+
+  public Optional<User> findByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
+
+  public boolean checkUserResumeExists(String username, String directoryPath) {
+    File folder = new File(directoryPath);
+
+    // Check if the directory exists
+    if (!folder.exists() || !folder.isDirectory()) {
+        return false;
+    }
+
+    File[] listOfFiles = folder.listFiles();
+    if (listOfFiles == null) return false;
+
+    // Iterate through files looking for a naming signature prefix or suffix matching the user
+    for (File file : listOfFiles) {
+      if (file.isFile() && file.getName().toLowerCase().contains(username.toLowerCase())) {
+        System.out.println("-> Filesystem Match Located: " + file.getName());
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @Override
